@@ -1,0 +1,30 @@
+version: '3.7'
+
+volumes:
+  db: # mount it internally instead of a folder. it avoids file lock problems
+
+services:
+  app:
+    env_file: ./.env
+    image: node:18
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - '3000:3000'
+    command: bash -c "npm install && npm run start:dev"
+    links:
+      - postgres
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_NAME}
+      TZ: 'GMT'
+      PGTZ: 'GMT'
+    ports:
+      - "5432:${DATABASE_PORT}"
+    volumes:
+      - db:/var/lib/postgresql/data
