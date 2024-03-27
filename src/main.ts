@@ -7,9 +7,11 @@ import NotFoundException from './common/exceptions/not-found-exception';
 import BaseException from './common/exceptions/base-exception';
 import { authRouter, healthRouter, userRouter } from './routes';
 import { AppDataSource } from '../config/datasource';
+import { ApiConfigService } from './common/api-config.service';
 
+const apiConfigService = new ApiConfigService()
 const app = express();
-const port = process.env.NODE_PORT || 5000
+const port = apiConfigService.getString('NODE_PORT') || 5000
 
 app.use(express.json());
 app.use(passport.initialize());
